@@ -10,12 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    
     - uses: actions/checkout@v3
-    - name: Push to registry
-      uses: actions/setup-dotnet@v2
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+    - uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+        
     - name: Publish
       run: dotnet publish src/StockManagement.Api/StockManagement.Api.csproj -c Release -o ./publish
     - name: Package
       run: docker build . -t fynzie/stock-management-api:latest
+    - name: Push
+      run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/stock-management-api:${{ github.sha }}
+
