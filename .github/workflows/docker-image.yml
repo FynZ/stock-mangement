@@ -26,7 +26,7 @@ jobs:
     - name: Publish
       run: dotnet publish src/StockManagement.Api/StockManagement.Api.csproj -c Release -o ./publish
     - name: Package
-      run: docker build . -t fynzie/stock-management-api:${{ github.sha }}
+      run: docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/stock-management-api:${{ github.sha }}
     - name: Push
       run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/stock-management-api:${{ github.sha }}
 
