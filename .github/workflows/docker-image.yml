@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  package:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Push to registry
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Publish
+      run: dotnet publish src/StockManagement.Api/StockManagement.Api.csproj -c Release -o ./publish
+    - name: Package
+      run: docker build . -t fynzie/stock-management-api:latest
